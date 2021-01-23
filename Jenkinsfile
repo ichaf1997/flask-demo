@@ -1,17 +1,17 @@
 pipeline {
     agent any
     stages {
-        stage("构建") {
+        stage("build") {
             steps {
                 echo '构建中....'
             }
         }
-        stage("单元测试") {
+        stage("test") {
             steps {
                 sh 'python test_main.py'
             }
         }
-        stage("部署") {
+        stage("deploy") {
             steps {
                 echo '部署中...'
             }
