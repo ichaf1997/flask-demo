@@ -1,5 +1,6 @@
 pipeline {
     /* 
+    作用域: pipeline block and stage block
     执行环境: 代理通常是一个机器或者容器,表示在哪里运行Pipeline
     any: 在任何可用的代理上执行流水线或阶段
     none: 不指定代理,由每个stage自行指定
@@ -8,7 +9,7 @@ pipeline {
     */
     agent any 
 
-    // 环境变量: 作用域有Pipeline和stage两种
+    // 环境变量: 作用域有Pipeline block and stage block
     environment {
         DISABLE_AUTH = 'true'
         DB_ENGINE = 'sqlite'
@@ -24,8 +25,8 @@ pipeline {
         stage("test") {
             steps {
                 /* 
-                   Windows下执行bat
-                   Unix下执行sh 
+                Windows下执行bat
+                Unix下执行sh 
                 */
                 bat 'python test_main.py'                                           
             }
@@ -33,22 +34,6 @@ pipeline {
         stage("deploy - Testing") {
             steps {
                 echo 'deploy in Testing...'
-            }
-        }
-        stage("deploy - Production") {
-            /*
-                部署到生产环境时,需人工确认,才会执行接下来的steps
-                input {
-                    message 'deploy in Production, continue ?'
-                    ok 'Yes, continue'
-                }
-            */
-            input {
-                message 'deploy in Production, continue ?'
-                ok 'Yes, continue'
-            }
-            steps {
-                echp 'deploy in Production...'
             }
         }
         stage("RetryAndTimeOut") {
@@ -63,9 +48,28 @@ pipeline {
                 }
             }
         }
+        stage("deploy - Production") {
+            // 假设某个场景，只有master分支释出的代码才能部署到生产环境中
+            when {
+                branch: 'master'
+            }
+            /*
+            部署到生产环境时,需人工确认,才会执行接下来的steps
+            注: 人工中止时，接下来的所有stage都不会执行
+            */
+            input {
+                // 自定义提示信息
+                message 'deploy in Production, continue ?'
+                // 自定义提交按钮ok的信息
+                ok 'Yes, continue'
+            }
+            steps {
+                echp 'deploy in Production...'
+            }
+        }
     }
 
-    // 完成时动作
+    // 完成时动作: 作用域有Pipeline block and stage block
     post {
         always {
             echo 'This will always run'
