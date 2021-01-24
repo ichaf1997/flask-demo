@@ -30,9 +30,25 @@ pipeline {
                 bat 'python test_main.py'                                           
             }
         }
-        stage("deploy") {
+        stage("deploy - Testing") {
             steps {
-                echo 'deploy...'
+                echo 'deploy in Testing...'
+            }
+        }
+        stage("deploy - Production") {
+            /*
+                部署到生产环境时,需人工确认,才会执行接下来的steps
+                input {
+                    message 'deploy in Production, continue ?'
+                    ok 'Yes, continue'
+                }
+            */
+            input {
+                message 'deploy in Production, continue ?'
+                ok 'Yes, continue'
+            }
+            steps {
+                echp 'deploy in Production...'
             }
         }
         stage("RetryAndTimeOut") {
