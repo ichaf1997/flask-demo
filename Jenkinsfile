@@ -64,7 +64,7 @@ pipeline {
                 ok 'Yes, continue'
             }
             steps {
-                echp 'deploy in Production...'
+                echo 'deploy in Production...'
             }
         }
     }
