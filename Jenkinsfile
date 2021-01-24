@@ -51,7 +51,7 @@ pipeline {
         stage("deploy - Production") {
             // 假设某个场景，只有master分支释出的代码才能部署到生产环境中
             when {
-                branch: 'master'
+                branch 'master'
             }
             /*
             部署到生产环境时,需人工确认,才会执行接下来的steps
