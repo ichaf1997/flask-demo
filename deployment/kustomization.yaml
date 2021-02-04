@@ -1,0 +1,3 @@
+resources:
+  - flaskdemo-deployment.yaml
+  - flaskdemo-service.yaml

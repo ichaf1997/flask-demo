@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-demo
+  labels:
+    app: flask-demo
+spec:
+  selector:
+    matchLabels:
+      app: flask-demo
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: flask-demo
+    spec:
+      containers:
+      - name: flask-demo
+        image:  APP_IMAGE
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "50M"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 35
+          timeoutSeconds: 10     
+        ports:
+        - containerPort:  5000
+          name:  flask-demo
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      restartPolicy: Always
